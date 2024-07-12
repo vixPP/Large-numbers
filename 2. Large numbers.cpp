@@ -12,22 +12,25 @@ public:
 
     big_integer& operator=(big_integer&& other) noexcept 
     {
-        value = std::move(other.value);
+        if (this != &other)
+        {
+            value = std::move(other.value);
+        }
         return *this;
     }
 
-    big_integer operator+(const big_integer& other) const 
+    big_integer operator+(const big_integer& other) const
     {
         std::string result;
-        int carry = 0;
-        int i = value.size() - 1;
-        int j = other.value.size() - 1;
+        size_t carry = 0;
+        size_t i = value.size() - 1;
+        size_t j = other.value.size() - 1;
 
-        while (i >= 0 || j >= 0 || carry) 
+        while (i != static_cast<size_t>(-1) || j != static_cast<size_t>(-1) || carry)
         {
-            int sum = carry;
-            if (i >= 0) sum += value[i--] - '0';
-            if (j >= 0) sum += other.value[j--] - '0';
+            size_t sum = carry;
+            if (i != static_cast<size_t>(-1)) sum += value[i--] - '0';
+            if (j != static_cast<size_t>(-1)) sum += other.value[j--] - '0';
             result = std::to_string(sum % 10) + result;
             carry = sum / 10;
         }
@@ -35,13 +38,13 @@ public:
         return big_integer(result);
     }
 
-    big_integer operator*(int multiplier) const
+    big_integer operator*(size_t multiplier) const
     {
         std::string result;
-        int carry = 0;
-        for (int i = value.size() - 1; i >= 0; i--) 
+        size_t carry = 0;
+        for (size_t i = value.size() - 1; i != static_cast<size_t>(-1); i--)
         {
-            int product = (value[i] - '0') * multiplier + carry;
+            size_t product = (value[i] - '0') * multiplier + carry;
             result = std::to_string(product % 10) + result;
             carry = product / 10;
         }
